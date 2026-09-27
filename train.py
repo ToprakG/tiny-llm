@@ -24,7 +24,12 @@ max_steps = 5000
 # Device
 # -------------------------
 
-device = "cuda" if torch.cuda.is_available() else "cpu"
+if torch.backends.mps.is_available():
+    device = "mps"
+elif torch.cuda.is_available():
+    device = "cuda"
+else:
+    device = "cpu"
 
 print("device:", device)
 
@@ -86,3 +91,6 @@ for step in range(max_steps):
             f"step {step}: "
             f"loss {loss.item():.4f}"
         )
+
+torch.save(model.state_dict(), "tinyllm.pt")
+print("model saved")
